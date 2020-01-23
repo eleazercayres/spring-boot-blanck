@@ -1,0 +1,44 @@
+server:
+  port: 8082
+  context-path: /e2e-frontend-bff
+  
+management:
+  security:
+    enabled: false
+    
+spring:
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  application:
+    name: e2e-frontend-bff
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        show_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/e2e?currentSchema=e2e
+    username: postgres
+    password: root
+    type: com.zaxxer.hikari.HikariDataSource
+    connection-test-query: select 1
+    connection-timeout: 25200
+    minimum-idle: 1 
+    maximum-pool-size: 10
+  zipkin.enabled: false
+feign:
+  httpclient:
+    max-connections: 1
+    connection-timeout: 2000
+application:
+  creditservice:
+    url: http://localhost:8082/e2e-frontend-bff/
+pool:
+  e2e-frontend-bff:
+    maxConn: 20
+    maxRoutes: 200
+    connTimeout: 60000
+    readTimeout: 60000

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<include
+		resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include
+		resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+	<property name="project.artifactId"
+		value="e2e-frontend-bff" />
+	<property name="LOG_PATH"
+		value="${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}" />
+	<property name="FILE_LOG_PATTERN"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } [%t] --- %-40.40logger{39} : %m%n%wex" />
+
+	<appender name="stash"
+		class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<destination>logstash.log:4560</destination>
+		<keepAliveDuration>5 minutes</keepAliveDuration>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<customFields>{"logName":"${project.artifactId}"}</customFields>
+			<fieldNames>
+				<thread>[ignore]</thread>
+				<levelValue>[ignore]</levelValue>
+			</fieldNames>
+		</encoder>
+	</appender>
+
+	<logger name="com.credibom.e2e-frontend-bff.infrastructure.api"
+		additivity="false">
+		<level value="FULL" />
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="stash" />
+	</root>
+
+</configuration>
